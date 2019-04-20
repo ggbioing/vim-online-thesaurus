@@ -50,39 +50,30 @@ function! s:Lookup(word)
     endif
     exec ":silent file thesaurus:\\ " . l:word_fname
 
-    setlocal noswapfile nobuflisted nospell nowrap modifiable
+    setlocal noswapfile nobuflisted nospell wrap modifiable
     setlocal buftype=nofile bufhidden=hide
     1,$d
     echo "Requesting thesaurus.com to look up \"" . l:word . "\"..."
     exec ":silent 0r !" . s:path . " " . shellescape(l:word)
-    exec ':silent! g/^relevant /,/^$/-!' . s:sort . " -t ' ' -k 2nr -k 3"
     if has("win32")
         silent! %s/\r//g
         silent! normal! gg5dd
     endif
-    silent g/\vrelevant \d+ /s///
-    silent! g/^\%(Syn\|Ant\)onyms:/+;/^$/-2s/$\n/, /
-    silent g/^\%(Syn\|Ant\)onyms:/ normal! JVgq
-    silent g/^Antonyms:/-d
-    0
-    1d
     exec 'resize ' . (line('$') - 1)
     setlocal nomodifiable filetype=thesaurus
+    let win_height=5
+    exec win_height."wincmd _ | norm gg"
     nnoremap <silent> <buffer> q :q<CR>
 endfunction
 
 if !exists('g:online_thesaurus_map_keys')
-    let g:online_thesaurus_map_keys = 1
-endif
-
-if g:online_thesaurus_map_keys
     nnoremap <unique> <LocalLeader>K :OnlineThesaurusCurrentWord<CR>
     vnoremap <unique> <LocalLeader>K y:Thesaurus <C-r>"<CR>
 endif
 
-command! OnlineThesaurusCurrentWord :call <SID>Lookup(expand('<cword>'))
-command! OnlineThesaurusLookup :call <SID>Lookup(expand('<cword>'))
-command! -nargs=1 Thesaurus :call <SID>Lookup(<q-args>)
+command! OnlineThesaurusCurrentWord call <SID>Lookup(expand('<cword>'))
+command! OnlineThesaurusLookup call <SID>Lookup(expand('<cword>'))
+command! -nargs=1 Thesaurus call <SID>Lookup(<q-args>)
 
 let &cpo = s:save_cpo
 let &shell = s:save_shell

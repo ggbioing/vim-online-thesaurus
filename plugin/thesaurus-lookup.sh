@@ -33,7 +33,7 @@ fi
 STATUS_CODE=$(eval "$PROGRAM" "$OPTIONS" "$OUTFILE" "$URL")
 
 if [[ $STATUS_CODE =~ 2.. ]]; then
-    printf "Main entry: thesaurus\n"
+    printf "Main entry: thesaurus; url: $URL\n"
     printf "Synonyms: "
     grep -Po '(?<="term":")[^"]*' "$OUTFILE" | head -$MAX_WORDS | tr '\n' ',' | sed 's/,/, /g;s/, $//'
 else

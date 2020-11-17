@@ -40,6 +40,11 @@ By default the `:OnlineThesaurusCurrentWord` command is mapped to
 `<LocalLeader>K`.  If you haven't remapped `<LocalLeader>`, it defaults to `\`.
 To close the split, just press `q`.
 
+## Languages
+
+Default language is English.
+
+Append 'IT' to every command to lookup words into an Italian thesaurus (e.g. `:OnlineThesaurusCurrentWordIT`)
 
 ## Configuration
 

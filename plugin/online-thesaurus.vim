@@ -41,9 +41,10 @@ function! s:Trim(input_string)
     return substitute(l:str, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
 
-function! s:Lookup(word, lang)
+function! s:Lookup(word, ...)
     let l:word = substitute(tolower(s:Trim(a:word)), '"', '', 'g')
     let l:word_fname = fnameescape(l:word)
+    let a:lang = get(a:, 1, 0)
 
     silent! let l:thesaurus_window = bufwinnr('^thesaurus: ')
     if l:thesaurus_window > -1
@@ -84,7 +85,8 @@ command! OnlineThesaurusCurrentWord call <SID>Lookup(expand('<cword>'),'EN')
 command! OnlineThesaurusCurrentWordIT call <SID>Lookup(expand('<cword>'),'IT')
 command! OnlineThesaurusLookup call <SID>Lookup(expand('<cword>'),'EN')
 command! OnlineThesaurusLookupIT call <SID>Lookup(expand('<cword>'),'IT')
-command! -nargs=1 Thesaurus call <SID>Lookup(<q-args>)
+command! -nargs=1 Thesaurus call <SID>Lookup(<q-args>, 'EN')
+command! -nargs=1 ThesaurusIT call <SID>Lookup(<q-args>, 'IT')
 
 let &cpo = s:save_cpo
 let &shell = s:save_shell

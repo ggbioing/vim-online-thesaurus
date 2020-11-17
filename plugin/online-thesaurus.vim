@@ -1,6 +1,6 @@
 " Vim plugin for looking up words in an online thesaurus
-" Author:       Anton Beloglazov <http://beloglazov.info/>
-" Version:      0.3.2
+" Author:       Luigi Antelmi <https://github.com/ggbioing>
+" Version:      0.3.3
 " Original idea and code: Nick Coleman <http://www.nickcoleman.org/>
 
 if exists("g:loaded_online_thesaurus")
@@ -14,6 +14,7 @@ let s:save_shell = &shell
 if has("win32")
     let cpu_arch      = system('echo %PROCESSOR_ARCHITECTURE%')
     let s:script_name = "\\thesaurus-lookup.sh"
+    let s:script_name_IT = "\\thesaurus-lookup-IT.sh"
     if isdirectory('C:\\Program Files (x86)\\Git')
         let &shell        = 'C:\\Program Files (x86)\\Git\\bin\\bash.exe'
         let s:sort        = "C:\\Program Files (x86)\\Git\\bin\\sort.exe"
@@ -26,19 +27,21 @@ if has("win32")
 else
     let &shell        = '/bin/sh'
     let s:script_name = "/thesaurus-lookup.sh"
+    let s:script_name_IT = "/thesaurus-lookup-IT.sh"
     silent let s:sort = system('if command -v /bin/sort > /dev/null; then'
             \ . ' printf /bin/sort;'
             \ . ' else printf sort; fi')
 endif
 
 let s:path = shellescape(expand("<sfile>:p:h") . s:script_name)
+let s:path_IT = shellescape(expand("<sfile>:p:h") . s:script_name_IT)
 
 function! s:Trim(input_string)
     let l:str = substitute(a:input_string, '[\r\n]', '', '')
     return substitute(l:str, '^\s*\(.\{-}\)\s*$', '\1', '')
 endfunction
 
-function! s:Lookup(word)
+function! s:Lookup(word, lang)
     let l:word = substitute(tolower(s:Trim(a:word)), '"', '', 'g')
     let l:word_fname = fnameescape(l:word)
 
@@ -54,7 +57,13 @@ function! s:Lookup(word)
     setlocal buftype=nofile bufhidden=hide
     1,$d
     echo "Requesting thesaurus.com to look up \"" . l:word . "\"..."
-    exec ":silent 0r !" . s:path . " " . shellescape(l:word)
+    if a:lang == 'EN'
+        exec ":silent 0r !" . s:path . " " . shellescape(l:word)
+    elseif a:lang == 'IT'
+        exec ":silent 0r !" . s:path_IT . " " . shellescape(l:word)
+    endif
+
+
     if has("win32")
         silent! %s/\r//g
         silent! normal! gg5dd
@@ -71,8 +80,10 @@ if !exists('g:online_thesaurus_map_keys')
     vnoremap <unique> <LocalLeader>K y:Thesaurus <C-r>"<CR>
 endif
 
-command! OnlineThesaurusCurrentWord call <SID>Lookup(expand('<cword>'))
-command! OnlineThesaurusLookup call <SID>Lookup(expand('<cword>'))
+command! OnlineThesaurusCurrentWord call <SID>Lookup(expand('<cword>'),'EN')
+command! OnlineThesaurusCurrentWordIT call <SID>Lookup(expand('<cword>'),'IT')
+command! OnlineThesaurusLookup call <SID>Lookup(expand('<cword>'),'EN')
+command! OnlineThesaurusLookupIT call <SID>Lookup(expand('<cword>'),'IT')
 command! -nargs=1 Thesaurus call <SID>Lookup(<q-args>)
 
 let &cpo = s:save_cpo

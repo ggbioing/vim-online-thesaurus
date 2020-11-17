@@ -1,12 +1,12 @@
 # Vim Online Thesaurus
 
 This is a plugin for Vim allowing you to look up words in an online thesaurus,
-which is at the moment configured to be http://thesaurus.com/
+which is at the moment configured to be http://thesaurus.com/ for the default language (English).
 
 The plugin displays the definition of the word under the cursor and a list of
 synonyms.
 
-![](https://github.com/beloglazov/vim-online-thesaurus/raw/master/screenshot.png)
+![](https://github.com/ggbioing/vim-online-thesaurus/raw/master/screenshot.png)
 
 The credit for the original idea and code goes to Nick Coleman:
 http://www.nickcoleman.org/
@@ -17,14 +17,14 @@ http://www.nickcoleman.org/
 If you are using Vundle, just add the following line to your .vimrc:
 
 ```
-Plugin 'beloglazov/vim-online-thesaurus'
+Plugin 'ggbioing/vim-online-thesaurus'
 ```
 
 Then run `:PluginInstall` to install the plugin.
 
 Note: Earlier versions required the "Bundle" keyword instead of plugin (i.e. :BundleInstall
-and Bundle 'beloglazov/vim-online-thesaurus'). However,
-this is deprecated and should not be used any longer.
+and Bundle 'ggbioing/vim-online-thesaurus').
+However, this is deprecated and should not be used any longer.
 
 
 ## Usage
@@ -75,6 +75,7 @@ plugin!
   - [Christian Heinrich](https://github.com/Shurakai)
   - [Matija Brković](https://github.com/blablatros)
   - [Shahaf Arad](https://github.com/av3r4ge)
+  - [Luigi Antelmi](https://github.com/ggbioing)
 
 
 ## License

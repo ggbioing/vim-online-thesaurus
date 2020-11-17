@@ -43,8 +43,8 @@ To close the split, just press `q`.
 ## Languages
 
 Default language is English.
-
 Append 'IT' to every command to lookup words into an Italian thesaurus (e.g. `:OnlineThesaurusCurrentWordIT`)
+Append 'FR' for French (e.g. `:OnlineThesaurusCurrentWordFR`)
 
 ## Configuration
 

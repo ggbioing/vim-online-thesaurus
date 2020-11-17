@@ -14,6 +14,7 @@ let s:save_shell = &shell
 if has("win32")
     let cpu_arch      = system('echo %PROCESSOR_ARCHITECTURE%')
     let s:script_name = "\\thesaurus-lookup.sh"
+    let s:script_name_FR = "\\thesaurus-lookup-FR.sh"
     let s:script_name_IT = "\\thesaurus-lookup-IT.sh"
     if isdirectory('C:\\Program Files (x86)\\Git')
         let &shell        = 'C:\\Program Files (x86)\\Git\\bin\\bash.exe'
@@ -27,6 +28,7 @@ if has("win32")
 else
     let &shell        = '/bin/sh'
     let s:script_name = "/thesaurus-lookup.sh"
+    let s:script_name_FR = "/thesaurus-lookup-FR.sh"
     let s:script_name_IT = "/thesaurus-lookup-IT.sh"
     silent let s:sort = system('if command -v /bin/sort > /dev/null; then'
             \ . ' printf /bin/sort;'
@@ -34,6 +36,7 @@ else
 endif
 
 let s:path = shellescape(expand("<sfile>:p:h") . s:script_name)
+let s:path_FR = shellescape(expand("<sfile>:p:h") . s:script_name_FR)
 let s:path_IT = shellescape(expand("<sfile>:p:h") . s:script_name_IT)
 
 function! s:Trim(input_string)
@@ -62,6 +65,8 @@ function! s:Lookup(word, ...)
         exec ":silent 0r !" . s:path . " " . shellescape(l:word)
     elseif a:lang == 'IT'
         exec ":silent 0r !" . s:path_IT . " " . shellescape(l:word)
+    elseif a:lang == 'FR'
+        exec ":silent 0r !" . s:path_FR . " " . shellescape(l:word)
     endif
 
 
@@ -82,11 +87,16 @@ if !exists('g:online_thesaurus_map_keys')
 endif
 
 command! OnlineThesaurusCurrentWord call <SID>Lookup(expand('<cword>'),'EN')
+command! OnlineThesaurusCurrentWordFR call <SID>Lookup(expand('<cword>'),'FR')
 command! OnlineThesaurusCurrentWordIT call <SID>Lookup(expand('<cword>'),'IT')
+
 command! OnlineThesaurusLookup call <SID>Lookup(expand('<cword>'),'EN')
+command! OnlineThesaurusLookupFR call <SID>Lookup(expand('<cword>'),'FR')
 command! OnlineThesaurusLookupIT call <SID>Lookup(expand('<cword>'),'IT')
+
 command! -nargs=1 Thesaurus call <SID>Lookup(<q-args>, 'EN')
 command! -nargs=1 ThesaurusIT call <SID>Lookup(<q-args>, 'IT')
+command! -nargs=1 ThesaurusFR call <SID>Lookup(<q-args>, 'FR')
 
 let &cpo = s:save_cpo
 let &shell = s:save_shell

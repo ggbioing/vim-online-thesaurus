@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-LOOKUPFILE=IT_CA/lookup.txt
+LOOKUPFILE=${HOME}/.vim/bundle/vim-online-thesaurus/plugin/IT_CA/lookup.txt
 
 WORD=$1
 WORD_NO_ACCENTS=`echo ${WORD} | iconv -f utf8 -t ascii//TRANSLIT`

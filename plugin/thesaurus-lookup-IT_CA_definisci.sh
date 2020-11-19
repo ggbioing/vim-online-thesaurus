@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
-DEFINITIONS=IT_CA/definizioni.txt
+DEFINITIONS=${HOME}/.vim/bundle/vim-online-thesaurus/plugin/IT_CA/definizioni.txt
 awk -v RS='' "/${*}/" ${DEFINITIONS}

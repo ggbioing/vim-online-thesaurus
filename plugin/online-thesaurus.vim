@@ -16,6 +16,8 @@ if has("win32")
     let s:script_name = "\\thesaurus-lookup.sh"
     let s:script_name_FR = "\\thesaurus-lookup-FR.sh"
     let s:script_name_IT = "\\thesaurus-lookup-IT.sh"
+    let s:script_name_IT_CA_trova = "\\thesaurus-lookup-IT_CA_trova.sh"
+    let s:script_name_IT_CA_definisci = "\\thesaurus-lookup-IT_CA_definisci.sh"
     if isdirectory('C:\\Program Files (x86)\\Git')
         let &shell        = 'C:\\Program Files (x86)\\Git\\bin\\bash.exe'
         let s:sort        = "C:\\Program Files (x86)\\Git\\bin\\sort.exe"
@@ -30,6 +32,8 @@ else
     let s:script_name = "/thesaurus-lookup.sh"
     let s:script_name_FR = "/thesaurus-lookup-FR.sh"
     let s:script_name_IT = "/thesaurus-lookup-IT.sh"
+    let s:script_name_IT_CA_trova = "/thesaurus-lookup-IT_CA_trova.sh"
+    let s:script_name_IT_CA_definisci = "/thesaurus-lookup-IT_CA_definisci.sh"
     silent let s:sort = system('if command -v /bin/sort > /dev/null; then'
             \ . ' printf /bin/sort;'
             \ . ' else printf sort; fi')
@@ -38,6 +42,8 @@ endif
 let s:path = shellescape(expand("<sfile>:p:h") . s:script_name)
 let s:path_FR = shellescape(expand("<sfile>:p:h") . s:script_name_FR)
 let s:path_IT = shellescape(expand("<sfile>:p:h") . s:script_name_IT)
+let s:path_IT_CA_trova = shellescape(expand("<sfile>:p:h") . s:script_name_IT_CA_trova)
+let s:path_IT_CA_definisci = shellescape(expand("<sfile>:p:h") . s:script_name_IT_CA_definisci)
 
 function! s:Trim(input_string)
     let l:str = substitute(a:input_string, '[\r\n]', '', '')
@@ -45,9 +51,13 @@ function! s:Trim(input_string)
 endfunction
 
 function! s:Lookup(word, ...)
-    let l:word = substitute(tolower(s:Trim(a:word)), '"', '', 'g')
-    let l:word_fname = fnameescape(l:word)
     let a:lang = get(a:, 1, 0)
+    if a:lang == 'IT_CA_definisci'
+        let l:word = getline('.')
+    else
+        let l:word = substitute(tolower(s:Trim(a:word)), '"', '', 'g')
+    endif
+    let l:word_fname = fnameescape(l:word)
 
     silent! let l:thesaurus_window = bufwinnr('^thesaurus: ')
     if l:thesaurus_window > -1
@@ -65,6 +75,10 @@ function! s:Lookup(word, ...)
         exec ":silent 0r !" . s:path . " " . shellescape(l:word)
     elseif a:lang == 'IT'
         exec ":silent 0r !" . s:path_IT . " " . shellescape(l:word)
+    elseif a:lang == 'IT_CA_trova'
+        exec ":silent 0r !" . s:path_IT_CA_trova . " " . shellescape(l:word)
+    elseif a:lang == 'IT_CA_definisci'
+        exec ":silent 0r !" . s:path_IT_CA_definisci . " " . shellescape(l:word)
     elseif a:lang == 'FR'
         exec ":silent 0r !" . s:path_FR . " " . shellescape(l:word)
     endif
@@ -76,7 +90,7 @@ function! s:Lookup(word, ...)
     endif
     exec 'resize ' . (line('$') - 1)
     setlocal nomodifiable filetype=thesaurus
-    let win_height=5
+    let win_height=10
     exec win_height."wincmd _ | norm gg"
     nnoremap <silent> <buffer> q :q<CR>
 endfunction
@@ -89,14 +103,18 @@ endif
 command! OnlineThesaurusCurrentWord call <SID>Lookup(expand('<cword>'),'EN')
 command! OnlineThesaurusCurrentWordFR call <SID>Lookup(expand('<cword>'),'FR')
 command! OnlineThesaurusCurrentWordIT call <SID>Lookup(expand('<cword>'),'IT')
+command! OnlineThesaurusCurrentWordITCA call <SID>Lookup(expand('<cword>'),'IT_CA_trova')
+command! OnlineThesaurusCurrentWordITCAdef call <SID>Lookup(expand('<cword>'),'IT_CA_definisci')
 
 command! OnlineThesaurusLookup call <SID>Lookup(expand('<cword>'),'EN')
 command! OnlineThesaurusLookupFR call <SID>Lookup(expand('<cword>'),'FR')
 command! OnlineThesaurusLookupIT call <SID>Lookup(expand('<cword>'),'IT')
 
 command! -nargs=1 Thesaurus call <SID>Lookup(<q-args>, 'EN')
-command! -nargs=1 ThesaurusIT call <SID>Lookup(<q-args>, 'IT')
 command! -nargs=1 ThesaurusFR call <SID>Lookup(<q-args>, 'FR')
+command! -nargs=1 ThesaurusIT call <SID>Lookup(<q-args>, 'IT')
+command! -nargs=1 ThesaurusITCAtrova call <SID>Lookup(<q-args>, 'IT_CA_trova')
+command! -nargs=1 ThesaurusITCAdefinisci call <SID>Lookup(<q-args>, 'IT_CA_definisci')
 
 let &cpo = s:save_cpo
 let &shell = s:save_shell
